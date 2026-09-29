@@ -1,0 +1,1 @@
+https://app.cvat.ai/auth/login?next=/tasks/2624513/jobs/4516329
