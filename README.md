@@ -1,89 +1,125 @@
 # Object_Annotation
 
-# 🚗 Vehicle Object Annotation & Automated Quality Assurance
 
-A structured **vehicle object annotation and annotation-quality-assurance project** based on the YOLO annotation format. The project contains a labeled vehicle dataset, class definitions, training-image configuration, and a Python-based automated QA pipeline for validating annotation files and generating dataset statistics.
+#  Object Annotation & Automated Quality Assurance
 
-## 📌 Project Overview
+A structured **vehicle object-annotation and dataset quality-assurance project** built around the **YOLO object-detection annotation format**.
 
-This project focuses on preparing and validating an object-detection dataset containing different types of vehicles.
+The project focuses on preparing a multi-class vehicle dataset, validating annotation files programmatically, generating dataset statistics, and maintaining a reproducible annotation workflow using **CVAT**.
 
-The dataset uses **YOLO-format annotations**, where each annotated object is represented using:
+---
+
+##  Project Overview
+
+Object detection depends heavily on the quality and consistency of training annotations. This project provides a structured workflow for preparing and validating vehicle annotations before they are used for downstream computer-vision model development.
+
+The dataset contains six vehicle categories:
+
+*  **Car**
+*  **Cycle**
+*  **Truck**
+*  **Bike**
+*  **Scooty**
+*  **Auto**
+
+Annotations are maintained in **YOLO format**, while `Automatic_QA.py` performs automated technical validation and generates Excel-based reports for annotation quality and dataset statistics.
+
+> **Scope:** The current repository primarily covers dataset annotation, annotation validation, and reporting. Model training and inference are potential future extensions.
+
+---
+
+##  Objectives
+
+* Prepare a structured vehicle object-detection dataset.
+* Maintain annotations using the YOLO format.
+* Use consistent class IDs across the dataset.
+* Automatically identify technically invalid annotations.
+* Validate annotation structure, coordinates, class IDs, and bounding-box dimensions.
+* Generate object-level QA reports.
+* Generate dataset-level statistics.
+* Provide sample dataset images and a CVAT annotation reference.
+* Establish a reusable foundation for future object-detection model training.
+
+---
+
+##  Dataset Summary
+
+| Metric                      | Value |
+| --------------------------- | ----: |
+| **Total Images**            |    66 |
+| **Total Annotated Objects** |   644 |
+| **Number of Classes**       |     6 |
+| **Annotation Format**       |  YOLO |
+
+### Class Mapping
+
+| Class ID | Vehicle Class |
+| -------: | ------------- |
+|        0 | Car           |
+|        1 | Cycle         |
+|        2 | Truck         |
+|        3 | Bike          |
+|        4 | Scooty        |
+|        5 | Auto          |
+
+The class mapping is defined in the project's class-name configuration and is used by the QA pipeline.
+
+---
+
+##  Project Workflow
 
 ```text
-<class_id> <x_center> <y_center> <width> <height>
+                Vehicle Images
+                       │
+                       ▼
+              CVAT Annotation
+                       │
+                       ▼
+             YOLO Label Files
+                       │
+                       ▼
+             Automated QA Script
+                       │
+          ┌────────────┼────────────┐
+          ▼            ▼            ▼
+      Format       Class ID      Bounding Box
+      Checks        Checks          Checks
+          │            │            │
+          └────────────┼────────────┘
+                       ▼
+                Validation Results
+                       │
+              ┌────────┴────────┐
+              ▼                 ▼
+     annotation_qa.xlsx   dataset_statistics.xlsx
 ```
 
-An automated Python quality-assurance script checks the annotation files for common technical issues such as invalid YOLO formatting, invalid numeric values, unsupported class IDs, out-of-range coordinates, empty annotation files, and invalid bounding-box dimensions.
-
-The validation results and dataset statistics are exported to Excel files for further inspection and reporting.
-
 ---
 
-## 🎯 Objectives
-
-* Create a structured vehicle object-detection dataset.
-* Maintain annotations in YOLO format.
-* Define and organize multiple vehicle classes.
-* Validate annotation files automatically.
-* Detect malformed or technically invalid annotations.
-* Generate dataset-level statistics.
-* Export QA results into Excel for review.
-* Prepare a clean dataset for downstream object-detection workflows.
-
----
-
-## 📊 Dataset Summary
-
-| Metric                  | Value |
-| ----------------------- | ----: |
-| Total Images            |    66 |
-| Total Annotated Objects |   644 |
-| Number of Classes       |     6 |
-| Annotation Format       |  YOLO |
-
-### Vehicle Classes
-
-| Class ID | Class  |
-| -------: | ------ |
-|        0 | Car    |
-|        1 | Cycle  |
-|        2 | Truck  |
-|        3 | Bike   |
-|        4 | Scooty |
-|        5 | Auto   |
-
-The class mapping is explicitly defined in the QA pipeline and corresponds to the project's `.names` configuration.
-
-### Class Distribution
-
-| Class     | Objects |
-| --------- | ------: |
-| Car       |     596 |
-| Cycle     |      12 |
-| Truck     |       6 |
-| Bike      |      20 |
-| Scooty    |       8 |
-| Auto      |       2 |
-| **Total** | **644** |
-
----
-
-## 🗂️ Project Structure
+##  Project Structure
 
 ```text
 Object_Annotation/
 │
 ├── data/
 │   ├── obj_train_data/
-│   │   ├── *.jpg
-│   │   ├── *.png
-│   │   └── *.avif
+│   │   ├── image files
+│   │   └── annotation files
 │   │
 │   ├── obj.names
 │   └── train.txt
 │
 ├── backup/
+│
+├── images/
+│   ├── 15.jpg
+│   ├── 16.jpg
+│   ├── 17.jpg
+│   ├── 18.jpg
+│   ├── 19.jpg
+│   ├── 20.jpg
+│   ├── 21.jpg
+│   └── 22.jpg
 │
 ├── Automatic_QA.py
 ├── annotation_qa.xlsx
@@ -92,241 +128,200 @@ Object_Annotation/
 └── README.md
 ```
 
-The training configuration points to `data/train.txt`, defines six classes, references the class-name file, and specifies a backup directory.
-
-The training list contains the dataset image paths under `data/obj_train_data/`.
-
 ---
 
-## 🔍 YOLO Annotation Format
+#  YOLO Annotation Format
 
-Each annotation file follows the YOLO object-detection structure:
+Each object is represented using five values:
 
 ```text
-class_id x_center y_center width height
+<class_id> <x_center> <y_center> <width> <height>
 ```
 
-For example:
+### Example
 
 ```text
 0 0.512 0.438 0.245 0.312
 ```
 
-Where:
+### Fields
 
-* `class_id` — Numeric identifier of the vehicle class.
-* `x_center` — Normalized horizontal center coordinate.
-* `y_center` — Normalized vertical center coordinate.
-* `width` — Normalized bounding-box width.
-* `height` — Normalized bounding-box height.
+| Field      | Description                              |
+| ---------- | ---------------------------------------- |
+| `class_id` | Numeric ID representing the object class |
+| `x_center` | Normalized horizontal center coordinate  |
+| `y_center` | Normalized vertical center coordinate    |
+| `width`    | Normalized bounding-box width            |
+| `height`   | Normalized bounding-box height           |
 
-The QA script verifies that each annotation contains exactly five values before processing the annotation further.
+The coordinate and bounding-box values are expected to be normalized between **0 and 1**.
 
 ---
 
-# 🧪 Automated Annotation Quality Assurance
+#  Automated Annotation Quality Assurance
 
-The project includes `Automatic_QA.py`, a Python script developed to automatically inspect YOLO annotation files.
+The project includes `Automatic_QA.py`, a Python-based validation pipeline designed to identify common technical issues in YOLO annotation files.
 
-### QA Workflow
-
-```text
-YOLO Annotation Files
-        │
-        ▼
-Read Annotation Files
-        │
-        ▼
-Validate Annotation Format
-        │
-        ▼
-Validate Numeric Values
-        │
-        ▼
-Validate Class IDs
-        │
-        ▼
-Validate Coordinates
-        │
-        ▼
-Validate Bounding Boxes
-        │
-        ▼
-Generate QA Results
-        │
-        ├──────────────► annotation_qa.xlsx
-        │
-        └──────────────► dataset_statistics.xlsx
-```
-
-## ✅ Validation Checks
-
-The QA system performs the following checks:
+## QA Checks
 
 ### 1. Empty Annotation Check
 
-Detects annotation files that contain no objects and marks them as:
+Detects annotation files that contain no object records.
 
-```text
-Empty Annotation
-Needs Review
-```
+### 2. YOLO Format Check
 
-The recommended correction is to add the required object annotations.
-
-### 2. YOLO Format Validation
-
-Checks whether every annotation contains exactly five values:
+Ensures that each annotation contains exactly five values:
 
 ```text
 class_id x_center y_center width height
 ```
 
-Invalid records are reported as `Invalid Format`.
+### 3. Numeric Validation
 
-### 3. Numeric Value Validation
-
-The script attempts to convert class IDs and bounding-box values into numeric types. Non-numeric values are reported as `Invalid Number`.
+Checks whether class IDs and bounding-box values contain valid numeric values.
 
 ### 4. Class ID Validation
 
-Only the configured class IDs from `0` to `5` are accepted.
-
-Invalid class IDs are reported as:
+Checks whether the class ID belongs to the configured class range:
 
 ```text
-Invalid Class
+0 – 5
 ```
-
-and marked for review.
 
 ### 5. Coordinate Validation
 
-The script verifies that normalized bounding-box values remain within the range:
+Checks whether normalized coordinates and bounding-box values remain within:
 
 ```text
 0 ≤ value ≤ 1
 ```
 
-This validation is applied to the center coordinates, width, and height.
-
 ### 6. Bounding-Box Validation
 
-Bounding-box width and height must be greater than zero.
+Checks that bounding-box width and height are greater than zero.
 
-Invalid dimensions are reported as:
+---
 
-```text
-Invalid Bounding Box
-```
+#  Annotation QA Report
 
-## with the recommendation to set positive width and height values.
+The generated `annotation_qa.xlsx` file provides object-level validation results.
 
-# 📈 Quality Assurance Results
+### Report Fields
 
-The generated QA report contains:
+| Field           | Description                        |
+| --------------- | ---------------------------------- |
+| **Image ID**    | Source image identifier            |
+| **Object ID**   | Object number within an annotation |
+| **Issue Type**  | Type of detected issue             |
+| **Description** | Explanation of the issue           |
+| **Correction**  | Suggested correction               |
+| **Status**      | Validation result                  |
 
-* Image ID
-* Object ID
-* Issue Type
-* Description
-* Correction
-* Status
-
-The current QA output contains **644 annotation records**, all marked:
+Typical status values are:
 
 ```text
 Passed
+Needs Review
 ```
 
-The script assigns `Passed` when the annotation has valid coordinates and a positive bounding-box size.
+A `Passed` result means that the annotation satisfied the technical validation rules implemented in the script.
 
-### Current QA Summary
-
-| QA Metric                  | Result |
-| -------------------------- | -----: |
-| Annotation Records Checked |    644 |
-| Passed                     |    644 |
-| Needs Review               |      0 |
-
-> **Note:** The QA process validates the technical structure of the annotation files. It does not independently determine whether a bounding box is visually correct for the object in the image.
+> **Important:** Technical QA does not independently verify whether a bounding box is visually positioned around the correct object. Visual annotation review is still required for semantic correctness.
 
 ---
 
-# 📊 Dataset Statistics
+#  Dataset Statistics
 
-The `Automatic_QA.py` script generates `dataset_statistics.xlsx` containing:
+The `dataset_statistics.xlsx` report provides a high-level summary of the dataset, including:
 
-* Total Images
-* Total Objects
-* Per-class object counts
+* Total number of images
+* Total number of annotated objects
+* Object counts by vehicle class
 
-The statistics are calculated programmatically from the processed annotation files.
+### Current Dataset Distribution
 
-The generated report contains:
-
-```text
-Total Images: 66
-Total Objects: 644
-
-Car: 596
-Cycle: 12
-Truck: 6
-Bike: 20
-Scooty: 8
-Auto: 2
-```
+| Vehicle Class | Objects |
+| ------------- | ------: |
+| Car           |     596 |
+| Cycle         |      12 |
+| Truck         |       6 |
+| Bike          |      20 |
+| Scooty        |       8 |
+| Auto          |       2 |
+| **Total**     | **644** |
 
 ---
 
-# 🛠️ Technologies Used
+#  Sample Dataset Images
 
-* **Python**
-* **Pandas**
-* **Excel / XLSX**
-* **YOLO Annotation Format**
-* **Object Detection Dataset Preparation**
-* **Automated Data Quality Assurance**
+The repository includes sample images representing the type of vehicle content used in the annotation dataset.
 
-## The QA script uses Python's `pathlib` for file handling and Pandas for creating the QA and statistics dataframes and exporting them to Excel.
+### Sample 15
 
-# ⚙️ Installation
+### Sample 16
 
-Clone the repository:
+### Sample 17
+
+### Sample 18
+
+### Sample 19
+
+### Sample 20
+
+### Sample 21
+
+### Sample 22
+
+> These images are included as dataset samples. They should not be interpreted as model predictions unless prediction bounding boxes are explicitly displayed.
+
+---
+
+#  CVAT Annotation Workflow
+
+The annotation workflow is associated with a **CVAT** job used for creating and managing object annotations.
+
+**CVAT Annotation Job:**
+
+[Open CVAT Annotation Job](https://app.cvat.ai/auth/login?next=/tasks/2624513/jobs/4516329)
+
+CVAT provides the annotation environment, while the Python QA pipeline performs automated technical validation of the resulting label files.
+
+---
+
+# Installation
+
+## 1. Clone the Repository
 
 ```bash
 git clone https://github.com/kirthi953/Object_Annotation.git
-```
-
-Navigate into the project:
-
-```bash
 cd Object_Annotation
 ```
 
-Install the required Python dependency:
+## 2. Install Dependencies
 
 ```bash
 pip install pandas openpyxl
 ```
 
----
-
-# ▶️ Running the QA Pipeline
-
-Before running the script, update the annotation-folder path in:
+### Requirements
 
 ```text
-Automatic_QA.py
+Python 3.x
+pandas
+openpyxl
 ```
 
-The current script uses a local annotation directory:
+### Is Pillow Required?
 
-```python
-labels_folder = Path("C:/Users/keert/Downloads/Bounded_Vehicles/labels/obj_train_data")
-```
+**No.**
 
-For a different environment, replace this with the appropriate dataset annotation path.
+The current `Automatic_QA.py` script does not open, resize, process, or manipulate images, so **Pillow is not required**.
+
+---
+
+#  Running the QA Pipeline
+
+Before execution, update the annotation-folder path in `Automatic_QA.py` if the dataset is stored in a different location.
 
 Run:
 
@@ -334,108 +329,115 @@ Run:
 python Automatic_QA.py
 ```
 
-The script will:
+### Processing Flow
 
-1. Locate the annotation files.
-2. Read each YOLO annotation.
-3. Validate annotation structure.
-4. Validate numeric values.
-5. Validate class IDs.
-6. Validate normalized coordinates.
-7. Validate bounding-box dimensions.
-8. Calculate class statistics.
-9. Generate the QA report.
-10. Generate the dataset statistics report.
+The script:
+
+1. Locates annotation files.
+2. Reads YOLO annotation records.
+3. Validates annotation structure.
+4. Validates numeric values.
+5. Validates class IDs.
+6. Validates normalized coordinates.
+7. Validates bounding-box dimensions.
+8. Calculates dataset statistics.
+9. Generates the annotation QA report.
+10. Generates the dataset statistics report.
 
 ---
 
-# 📁 Generated Reports
+#  Generated Reports
 
-### `annotation_qa.xlsx`
+## `annotation_qa.xlsx`
 
-Contains object-level QA results:
+Contains object-level annotation validation results.
 
-```text
-Image ID
-Object ID
-Issue Type
-Description
-Correction
-Status
-```
+## `dataset_statistics.xlsx`
 
-### `dataset_statistics.xlsx`
+Contains dataset-level statistics and class counts.
 
-Contains dataset-level statistics:
+These reports make it easier to review annotation quality and understand the composition of the dataset.
 
-```text
-Metric
-Value
-```
+---
 
-## The script explicitly writes both reports to Excel after completing the annotation checks.
+#  Technologies Used
 
-# 🚀 Potential Applications
+| Technology      | Purpose                                     |
+| --------------- | ------------------------------------------- |
+| **Python**      | QA automation and dataset processing        |
+| **Pandas**      | Data processing and Excel report generation |
+| **OpenPyXL**    | XLSX file support                           |
+| **YOLO Format** | Object-detection annotation structure       |
+| **CVAT**        | Image annotation workflow                   |
+| **Excel/XLSX**  | QA and statistics reporting                 |
 
-This dataset and validation workflow can support future computer-vision applications such as:
+---
+
+#  Potential Applications
+
+The prepared dataset can serve as a foundation for future computer-vision applications such as:
 
 * Vehicle detection
+* Vehicle classification
 * Traffic monitoring
 * Road-scene analysis
-* Vehicle classification
-* Intelligent transportation systems
 * Traffic analytics
-* Computer-vision model training
+* Intelligent transportation systems
+* Object-detection model training
 
-These represent potential downstream uses of the annotated dataset rather than functionality implemented directly by the current repository.
-
----
-
-# 🔮 Future Improvements
-
-Potential extensions to the project include:
-
-* Add automated image-to-label consistency checks.
-* Visualize bounding boxes directly on images.
-* Add duplicate annotation detection.
-* Detect overlapping or suspicious bounding boxes.
-* Generate class-distribution charts.
-* Add dataset train/validation/test splitting.
-* Add automated annotation summaries.
-* Integrate YOLO model training and evaluation.
-* Add precision, recall, mAP, and confusion-matrix reporting.
-* Improve the QA pipeline with configurable dataset paths.
-* Add command-line arguments instead of hard-coded paths.
-* Add automated tests for the QA functions.
-* Integrate the QA process into a CI/CD workflow.
+> These represent potential downstream applications; the current repository focuses on annotation and annotation quality assurance.
 
 ---
 
-# 📌 Key Features
+#  Future Enhancements
 
-| Feature                 | Description                              |
-| ----------------------- | ---------------------------------------- |
-| YOLO Annotations        | Structured object-detection labels       |
-| 6 Vehicle Classes       | Car, Cycle, Truck, Bike, Scooty, Auto    |
-| Automated QA            | Programmatic annotation validation       |
-| Format Checking         | Validates five-value YOLO records        |
-| Class Validation        | Detects unsupported class IDs            |
-| Coordinate Validation   | Checks normalized values                 |
-| Bounding-Box Validation | Checks positive dimensions               |
-| Excel Reporting         | Generates QA and statistics reports      |
-| Dataset Statistics      | Provides image, object, and class counts |
+Possible improvements include:
 
----
-
-# 👩‍💻 Project Purpose
-
-The primary purpose of this project is to demonstrate a **systematic approach to preparing and validating an object-detection dataset**. Instead of relying only on manual inspection, the project introduces an automated quality-assurance process that identifies technical annotation problems and produces structured reports for dataset review.
+* Visual bounding-box verification
+* Image-to-label consistency checks
+* Duplicate annotation detection
+* Overlapping or suspicious bounding-box detection
+* Class-distribution visualization
+* Automated train/validation/test splitting
+* YOLO model training integration
+* Model evaluation using precision, recall, and mAP
+* Confusion-matrix generation
+* Configurable dataset paths through command-line arguments
+* Automated unit tests
+* CI/CD-based annotation QA
 
 ---
 
+#  Key Features
 
-# ⭐ Acknowledgement
+| Feature                     | Description                               |
+| --------------------------- | ----------------------------------------- |
+| **YOLO Annotations**        | Standard object-detection label structure |
+| **6 Vehicle Classes**       | Car, Cycle, Truck, Bike, Scooty, Auto     |
+| **Automated QA**            | Programmatic annotation validation        |
+| **Format Validation**       | Checks YOLO annotation structure          |
+| **Class Validation**        | Detects unsupported class IDs             |
+| **Coordinate Validation**   | Checks normalized values                  |
+| **Bounding-Box Validation** | Checks positive dimensions                |
+| **Excel Reporting**         | Generates structured QA reports           |
+| **Dataset Statistics**      | Provides dataset-level information        |
+| **CVAT Integration**        | Supports the annotation workflow          |
+| **Sample Images**           | Provides visual dataset examples          |
 
-This project demonstrates practical skills in:
+---
 
-**Python • Data Validation • Object Detection • YOLO Annotation • Dataset Preparation • Quality Assurance • Data Analysis • Excel Reporting**
+#  Skills Demonstrated
+
+This project demonstrates practical experience in:
+
+**Python • Computer Vision • Object Detection • YOLO Annotation • CVAT • Dataset Preparation • Data Validation • Quality Assurance • Pandas • Excel Reporting • Dataset Analysis**
+
+---
+
+#  License
+
+Add an appropriate open-source license if the repository and dataset are intended for public reuse.
+
+---
+
+
